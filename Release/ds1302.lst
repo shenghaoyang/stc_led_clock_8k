@@ -1,0 +1,1339 @@
+                                      1 ;--------------------------------------------------------
+                                      2 ; File Created by SDCC : free open source ANSI-C Compiler
+                                      3 ; Version 3.6.9 #9959 (Linux)
+                                      4 ;--------------------------------------------------------
+                                      5 	.module ds1302
+                                      6 	.optsdcc -mmcs51 --model-small
+                                      7 	
+                                      8 ;--------------------------------------------------------
+                                      9 ; Public variables in this module
+                                     10 ;--------------------------------------------------------
+                                     11 	.globl _bcd_add_16_PARM_2
+                                     12 	.globl _bcd_add_PARM_2
+                                     13 	.globl _ds1302_sram_init
+                                     14 	.globl _ds1302_init
+                                     15 	.globl _ds1302_struct_addr
+                                     16 	.globl _crcSlow
+                                     17 	.globl _memcpy
+                                     18 	.globl _UART_SM0
+                                     19 	.globl _UART_SM1
+                                     20 	.globl _UART_SM2
+                                     21 	.globl _UART_REN
+                                     22 	.globl _UART_TB8
+                                     23 	.globl _UART_RB8
+                                     24 	.globl _UART_TI
+                                     25 	.globl _UART_RI
+                                     26 	.globl _PCA_CF
+                                     27 	.globl _PCA_CR
+                                     28 	.globl _PCA_CCF2
+                                     29 	.globl _PCA_CCF1
+                                     30 	.globl _PCA_CCF0
+                                     31 	.globl _TMR_TCON_TF1
+                                     32 	.globl _TMR_TCON_TR1
+                                     33 	.globl _TMR_TCON_TF0
+                                     34 	.globl _TMR_TCON_TR0
+                                     35 	.globl _TMR_TCON_IE1
+                                     36 	.globl _TMR_TCON_IT1
+                                     37 	.globl _TMR_TCON_IE0
+                                     38 	.globl _TMR_TCON_IT0
+                                     39 	.globl _INT_IP_PPCA
+                                     40 	.globl _INT_IP_PLVD
+                                     41 	.globl _INT_IP_PADC
+                                     42 	.globl _INT_IP_PS
+                                     43 	.globl _INT_IP_PT1
+                                     44 	.globl _INT_IP_PX1
+                                     45 	.globl _INT_IP_PT0
+                                     46 	.globl _INT_IP_PX0
+                                     47 	.globl _INT_IE_EA
+                                     48 	.globl _INT_IE_ELVD
+                                     49 	.globl _INT_IE_EADC
+                                     50 	.globl _INT_IE_ES
+                                     51 	.globl _INT_IE_ET1
+                                     52 	.globl _INT_IE_EX1
+                                     53 	.globl _INT_IE_ET0
+                                     54 	.globl _INT_IE_EX0
+                                     55 	.globl _PORT_P5_7
+                                     56 	.globl _PORT_P5_6
+                                     57 	.globl _PORT_P5_5
+                                     58 	.globl _PORT_P5_4
+                                     59 	.globl _PORT_P5_3
+                                     60 	.globl _PORT_P5_2
+                                     61 	.globl _PORT_P5_1
+                                     62 	.globl _PORT_P5_0
+                                     63 	.globl _PORT_P4_7
+                                     64 	.globl _PORT_P4_6
+                                     65 	.globl _PORT_P4_5
+                                     66 	.globl _PORT_P4_4
+                                     67 	.globl _PORT_P4_3
+                                     68 	.globl _PORT_P4_2
+                                     69 	.globl _PORT_P4_1
+                                     70 	.globl _PORT_P4_0
+                                     71 	.globl _PORT_P3_7
+                                     72 	.globl _PORT_P3_6
+                                     73 	.globl _PORT_P3_5
+                                     74 	.globl _PORT_P3_4
+                                     75 	.globl _PORT_P3_3
+                                     76 	.globl _PORT_P3_2
+                                     77 	.globl _PORT_P3_1
+                                     78 	.globl _PORT_P3_0
+                                     79 	.globl _PORT_P2_7
+                                     80 	.globl _PORT_P2_6
+                                     81 	.globl _PORT_P2_5
+                                     82 	.globl _PORT_P2_4
+                                     83 	.globl _PORT_P2_3
+                                     84 	.globl _PORT_P2_2
+                                     85 	.globl _PORT_P2_1
+                                     86 	.globl _PORT_P2_0
+                                     87 	.globl _PORT_P1_7
+                                     88 	.globl _PORT_P1_6
+                                     89 	.globl _PORT_P1_5
+                                     90 	.globl _PORT_P1_4
+                                     91 	.globl _PORT_P1_3
+                                     92 	.globl _PORT_P1_2
+                                     93 	.globl _PORT_P1_1
+                                     94 	.globl _PORT_P1_0
+                                     95 	.globl _CY
+                                     96 	.globl _AC
+                                     97 	.globl _F0
+                                     98 	.globl _RS1
+                                     99 	.globl _RS0
+                                    100 	.globl _OV
+                                    101 	.globl _F1
+                                    102 	.globl _P
+                                    103 	.globl _IAP_CONTR
+                                    104 	.globl _IAP_TRIG
+                                    105 	.globl _IAP_CMD
+                                    106 	.globl _IAP_ADDR
+                                    107 	.globl _IAP_ADDRL
+                                    108 	.globl _IAP_ADDRH
+                                    109 	.globl _IAP_DATA
+                                    110 	.globl _UART_SADEN
+                                    111 	.globl _UART_SADDR
+                                    112 	.globl _UART_SBUF
+                                    113 	.globl _UART_SCON
+                                    114 	.globl _PCA_CMOD
+                                    115 	.globl _PCA_CCON
+                                    116 	.globl _PCA_PWM2
+                                    117 	.globl _PCA_PWM1
+                                    118 	.globl _PCA_PWM0
+                                    119 	.globl _PCA_C
+                                    120 	.globl _PCA_CCAP2_L
+                                    121 	.globl _PCA_CCAP2_H
+                                    122 	.globl _PCA_CCAP1_L
+                                    123 	.globl _PCA_CCAP1_H
+                                    124 	.globl _PCA_CCAP0_L
+                                    125 	.globl _PCA_CCAP0_H
+                                    126 	.globl _PCA_CCAP2
+                                    127 	.globl _PCA_CCAP1
+                                    128 	.globl _PCA_CCAP0
+                                    129 	.globl _PCA_CCAPM2
+                                    130 	.globl _PCA_CCAPM1
+                                    131 	.globl _PCA_CCAPM0
+                                    132 	.globl _CMP_CR2
+                                    133 	.globl _CMP_CR1
+                                    134 	.globl _ADC_RESL
+                                    135 	.globl _ADC_RESH
+                                    136 	.globl _ADC_RES
+                                    137 	.globl _ADC_CONTR
+                                    138 	.globl _ADC_P1ASF
+                                    139 	.globl _EEPROM_CONTR
+                                    140 	.globl _EEPROM_TRIG
+                                    141 	.globl _EEPROM_CMD
+                                    142 	.globl _EEPROM_ADDR
+                                    143 	.globl _EEPROM_DATA
+                                    144 	.globl _TMR_T2
+                                    145 	.globl _TMR_T0
+                                    146 	.globl _TMR_TMOD
+                                    147 	.globl _TMR_TCON
+                                    148 	.globl _INT_IP2
+                                    149 	.globl _INT_IP
+                                    150 	.globl _INT_IE2
+                                    151 	.globl _INT_IE
+                                    152 	.globl _PORT_P5M0
+                                    153 	.globl _PORT_P5M1
+                                    154 	.globl _PORT_P4M0
+                                    155 	.globl _PORT_P4M1
+                                    156 	.globl _PORT_P3M0
+                                    157 	.globl _PORT_P3M1
+                                    158 	.globl _PORT_P2M0
+                                    159 	.globl _PORT_P2M1
+                                    160 	.globl _PORT_P1M0
+                                    161 	.globl _PORT_P1M1
+                                    162 	.globl _PORT_P5
+                                    163 	.globl _PORT_P4
+                                    164 	.globl _PORT_P3
+                                    165 	.globl _PORT_P2
+                                    166 	.globl _PORT_P1
+                                    167 	.globl _PSW
+                                    168 	.globl _PCON2
+                                    169 	.globl _AUXR2
+                                    170 	.globl _AUXR1
+                                    171 	.globl _AUXR
+                                    172 	.globl _PCON
+                                    173 	.globl _DPTR
+                                    174 	.globl _SP
+                                    175 	.globl _ds1302_sram_data
+                                    176 	.globl _DS1302_DATA_7
+                                    177 	.globl _DS1302_DATA_6
+                                    178 	.globl _DS1302_DATA_5
+                                    179 	.globl _DS1302_DATA_4
+                                    180 	.globl _DS1302_DATA_3
+                                    181 	.globl _DS1302_DATA_2
+                                    182 	.globl _DS1302_DATA_1
+                                    183 	.globl _DS1302_DATA_0
+                                    184 	.globl _ds1302
+                                    185 	.globl _DS1302_DATA
+                                    186 	.globl _ds1302_reset
+                                    187 	.globl _ds1302_start
+                                    188 	.globl _ds1302_read_byte_slow
+                                    189 	.globl _ds1302_write_byte_slow
+                                    190 	.globl _ds1302_set_time
+                                    191 	.globl _ds1302_read_SRAM
+                                    192 	.globl _ds1302_write_SRAM
+                                    193 	.globl _ds1302_check_SRAM
+                                    194 	.globl _ds1302_calculate_CRC
+                                    195 	.globl _ds1302_power_loss_reset
+                                    196 	.globl _convert_24h_to_12h
+                                    197 	.globl _bcd_add
+                                    198 	.globl _bcd_add_16
+                                    199 ;--------------------------------------------------------
+                                    200 ; special function registers
+                                    201 ;--------------------------------------------------------
+                                    202 	.area RSEG    (ABS,DATA)
+      000000                        203 	.org 0x0000
+                           000081   204 _SP	=	0x0081
+                           008382   205 _DPTR	=	0x8382
+                           000087   206 _PCON	=	0x0087
+                           00008E   207 _AUXR	=	0x008e
+                           0000A2   208 _AUXR1	=	0x00a2
+                           00008F   209 _AUXR2	=	0x008f
+                           000097   210 _PCON2	=	0x0097
+                           0000D0   211 _PSW	=	0x00d0
+                           000090   212 _PORT_P1	=	0x0090
+                           0000A0   213 _PORT_P2	=	0x00a0
+                           0000B0   214 _PORT_P3	=	0x00b0
+                           0000C0   215 _PORT_P4	=	0x00c0
+                           0000C8   216 _PORT_P5	=	0x00c8
+                           000091   217 _PORT_P1M1	=	0x0091
+                           000092   218 _PORT_P1M0	=	0x0092
+                           000095   219 _PORT_P2M1	=	0x0095
+                           000096   220 _PORT_P2M0	=	0x0096
+                           0000B1   221 _PORT_P3M1	=	0x00b1
+                           0000B2   222 _PORT_P3M0	=	0x00b2
+                           0000B3   223 _PORT_P4M1	=	0x00b3
+                           0000B4   224 _PORT_P4M0	=	0x00b4
+                           0000C9   225 _PORT_P5M1	=	0x00c9
+                           0000CA   226 _PORT_P5M0	=	0x00ca
+                           0000A8   227 _INT_IE	=	0x00a8
+                           0000AF   228 _INT_IE2	=	0x00af
+                           0000B8   229 _INT_IP	=	0x00b8
+                           0000B5   230 _INT_IP2	=	0x00b5
+                           000088   231 _TMR_TCON	=	0x0088
+                           000089   232 _TMR_TMOD	=	0x0089
+                           008C8A   233 _TMR_T0	=	0x8c8a
+                           00D6D7   234 _TMR_T2	=	0xd6d7
+                           0000C2   235 _EEPROM_DATA	=	0x00c2
+                           00C3C4   236 _EEPROM_ADDR	=	0xc3c4
+                           0000C5   237 _EEPROM_CMD	=	0x00c5
+                           0000C6   238 _EEPROM_TRIG	=	0x00c6
+                           0000C7   239 _EEPROM_CONTR	=	0x00c7
+                           00009D   240 _ADC_P1ASF	=	0x009d
+                           0000BC   241 _ADC_CONTR	=	0x00bc
+                           00BDBE   242 _ADC_RES	=	0xbdbe
+                           0000BD   243 _ADC_RESH	=	0x00bd
+                           0000BE   244 _ADC_RESL	=	0x00be
+                           0000E6   245 _CMP_CR1	=	0x00e6
+                           0000E7   246 _CMP_CR2	=	0x00e7
+                           0000DA   247 _PCA_CCAPM0	=	0x00da
+                           0000DB   248 _PCA_CCAPM1	=	0x00db
+                           0000DC   249 _PCA_CCAPM2	=	0x00dc
+                           00FAEA   250 _PCA_CCAP0	=	0xfaea
+                           00FBEB   251 _PCA_CCAP1	=	0xfbeb
+                           00FCEC   252 _PCA_CCAP2	=	0xfcec
+                           0000FA   253 _PCA_CCAP0_H	=	0x00fa
+                           0000EA   254 _PCA_CCAP0_L	=	0x00ea
+                           0000FB   255 _PCA_CCAP1_H	=	0x00fb
+                           0000EB   256 _PCA_CCAP1_L	=	0x00eb
+                           0000FC   257 _PCA_CCAP2_H	=	0x00fc
+                           0000EC   258 _PCA_CCAP2_L	=	0x00ec
+                           00F9E9   259 _PCA_C	=	0xf9e9
+                           0000F2   260 _PCA_PWM0	=	0x00f2
+                           0000F3   261 _PCA_PWM1	=	0x00f3
+                           0000F4   262 _PCA_PWM2	=	0x00f4
+                           0000D8   263 _PCA_CCON	=	0x00d8
+                           0000D9   264 _PCA_CMOD	=	0x00d9
+                           000098   265 _UART_SCON	=	0x0098
+                           000099   266 _UART_SBUF	=	0x0099
+                           0000A9   267 _UART_SADDR	=	0x00a9
+                           0000B9   268 _UART_SADEN	=	0x00b9
+                           0000C2   269 _IAP_DATA	=	0x00c2
+                           0000C3   270 _IAP_ADDRH	=	0x00c3
+                           0000C4   271 _IAP_ADDRL	=	0x00c4
+                           00C3C4   272 _IAP_ADDR	=	0xc3c4
+                           0000C5   273 _IAP_CMD	=	0x00c5
+                           0000C6   274 _IAP_TRIG	=	0x00c6
+                           0000C7   275 _IAP_CONTR	=	0x00c7
+                                    276 ;--------------------------------------------------------
+                                    277 ; special function bits
+                                    278 ;--------------------------------------------------------
+                                    279 	.area RSEG    (ABS,DATA)
+      000000                        280 	.org 0x0000
+                           0000D0   281 _P	=	0x00d0
+                           0000D1   282 _F1	=	0x00d1
+                           0000D2   283 _OV	=	0x00d2
+                           0000D3   284 _RS0	=	0x00d3
+                           0000D4   285 _RS1	=	0x00d4
+                           0000D5   286 _F0	=	0x00d5
+                           0000D6   287 _AC	=	0x00d6
+                           0000D7   288 _CY	=	0x00d7
+                           000090   289 _PORT_P1_0	=	0x0090
+                           000091   290 _PORT_P1_1	=	0x0091
+                           000092   291 _PORT_P1_2	=	0x0092
+                           000093   292 _PORT_P1_3	=	0x0093
+                           000094   293 _PORT_P1_4	=	0x0094
+                           000095   294 _PORT_P1_5	=	0x0095
+                           000096   295 _PORT_P1_6	=	0x0096
+                           000097   296 _PORT_P1_7	=	0x0097
+                           0000A0   297 _PORT_P2_0	=	0x00a0
+                           0000A1   298 _PORT_P2_1	=	0x00a1
+                           0000A2   299 _PORT_P2_2	=	0x00a2
+                           0000A3   300 _PORT_P2_3	=	0x00a3
+                           0000A4   301 _PORT_P2_4	=	0x00a4
+                           0000A5   302 _PORT_P2_5	=	0x00a5
+                           0000A6   303 _PORT_P2_6	=	0x00a6
+                           0000A7   304 _PORT_P2_7	=	0x00a7
+                           0000B0   305 _PORT_P3_0	=	0x00b0
+                           0000B1   306 _PORT_P3_1	=	0x00b1
+                           0000B2   307 _PORT_P3_2	=	0x00b2
+                           0000B3   308 _PORT_P3_3	=	0x00b3
+                           0000B4   309 _PORT_P3_4	=	0x00b4
+                           0000B5   310 _PORT_P3_5	=	0x00b5
+                           0000B6   311 _PORT_P3_6	=	0x00b6
+                           0000B7   312 _PORT_P3_7	=	0x00b7
+                           0000C0   313 _PORT_P4_0	=	0x00c0
+                           0000C1   314 _PORT_P4_1	=	0x00c1
+                           0000C2   315 _PORT_P4_2	=	0x00c2
+                           0000C3   316 _PORT_P4_3	=	0x00c3
+                           0000C4   317 _PORT_P4_4	=	0x00c4
+                           0000C5   318 _PORT_P4_5	=	0x00c5
+                           0000C6   319 _PORT_P4_6	=	0x00c6
+                           0000C7   320 _PORT_P4_7	=	0x00c7
+                           0000C8   321 _PORT_P5_0	=	0x00c8
+                           0000C9   322 _PORT_P5_1	=	0x00c9
+                           0000CA   323 _PORT_P5_2	=	0x00ca
+                           0000CB   324 _PORT_P5_3	=	0x00cb
+                           0000CC   325 _PORT_P5_4	=	0x00cc
+                           0000CD   326 _PORT_P5_5	=	0x00cd
+                           0000CE   327 _PORT_P5_6	=	0x00ce
+                           0000CD   328 _PORT_P5_7	=	0x00cd
+                           0000A8   329 _INT_IE_EX0	=	0x00a8
+                           0000A9   330 _INT_IE_ET0	=	0x00a9
+                           0000AA   331 _INT_IE_EX1	=	0x00aa
+                           0000AB   332 _INT_IE_ET1	=	0x00ab
+                           0000AC   333 _INT_IE_ES	=	0x00ac
+                           0000AD   334 _INT_IE_EADC	=	0x00ad
+                           0000AE   335 _INT_IE_ELVD	=	0x00ae
+                           0000AF   336 _INT_IE_EA	=	0x00af
+                           0000B8   337 _INT_IP_PX0	=	0x00b8
+                           0000B9   338 _INT_IP_PT0	=	0x00b9
+                           0000BA   339 _INT_IP_PX1	=	0x00ba
+                           0000BB   340 _INT_IP_PT1	=	0x00bb
+                           0000BC   341 _INT_IP_PS	=	0x00bc
+                           0000BD   342 _INT_IP_PADC	=	0x00bd
+                           0000BE   343 _INT_IP_PLVD	=	0x00be
+                           0000BF   344 _INT_IP_PPCA	=	0x00bf
+                           000088   345 _TMR_TCON_IT0	=	0x0088
+                           000089   346 _TMR_TCON_IE0	=	0x0089
+                           00008A   347 _TMR_TCON_IT1	=	0x008a
+                           00008B   348 _TMR_TCON_IE1	=	0x008b
+                           00008C   349 _TMR_TCON_TR0	=	0x008c
+                           00008D   350 _TMR_TCON_TF0	=	0x008d
+                           00008E   351 _TMR_TCON_TR1	=	0x008e
+                           00008F   352 _TMR_TCON_TF1	=	0x008f
+                           0000D8   353 _PCA_CCF0	=	0x00d8
+                           0000D9   354 _PCA_CCF1	=	0x00d9
+                           0000DA   355 _PCA_CCF2	=	0x00da
+                           0000DE   356 _PCA_CR	=	0x00de
+                           0000DF   357 _PCA_CF	=	0x00df
+                           000098   358 _UART_RI	=	0x0098
+                           000099   359 _UART_TI	=	0x0099
+                           00009A   360 _UART_RB8	=	0x009a
+                           00009B   361 _UART_TB8	=	0x009b
+                           00009C   362 _UART_REN	=	0x009c
+                           00009D   363 _UART_SM2	=	0x009d
+                           00009E   364 _UART_SM1	=	0x009e
+                           00009E   365 _UART_SM0	=	0x009e
+                                    366 ;--------------------------------------------------------
+                                    367 ; overlayable register banks
+                                    368 ;--------------------------------------------------------
+                                    369 	.area REG_BANK_0	(REL,OVR,DATA)
+      000000                        370 	.ds 8
+                                    371 ;--------------------------------------------------------
+                                    372 ; internal ram data
+                                    373 ;--------------------------------------------------------
+                                    374 	.area DSEG    (DATA)
+                           000021   375 _DS1302_DATA	=	0x0021
+      000000                        376 _ds1302::
+      000000                        377 	.ds 8
+                                    378 ;--------------------------------------------------------
+                                    379 ; overlayable items in internal ram 
+                                    380 ;--------------------------------------------------------
+                                    381 	.area	OSEG    (OVR,DATA)
+                                    382 	.area	OSEG    (OVR,DATA)
+                                    383 	.area	OSEG    (OVR,DATA)
+                                    384 	.area	OSEG    (OVR,DATA)
+                                    385 	.area	OSEG    (OVR,DATA)
+      000000                        386 _bcd_add_PARM_2:
+      000000                        387 	.ds 1
+                                    388 	.area	OSEG    (OVR,DATA)
+      000000                        389 _bcd_add_16_PARM_2:
+      000000                        390 	.ds 2
+                                    391 ;--------------------------------------------------------
+                                    392 ; indirectly addressable internal ram data
+                                    393 ;--------------------------------------------------------
+                                    394 	.area ISEG    (DATA)
+                                    395 ;--------------------------------------------------------
+                                    396 ; absolute internal ram data
+                                    397 ;--------------------------------------------------------
+                                    398 	.area IABS    (ABS,DATA)
+                                    399 	.area IABS    (ABS,DATA)
+                                    400 ;--------------------------------------------------------
+                                    401 ; bit data
+                                    402 ;--------------------------------------------------------
+                                    403 	.area BSEG    (BIT)
+                           000008   404 _DS1302_DATA_0	=	0x0008
+                           000009   405 _DS1302_DATA_1	=	0x0009
+                           00000A   406 _DS1302_DATA_2	=	0x000a
+                           00000B   407 _DS1302_DATA_3	=	0x000b
+                           00000C   408 _DS1302_DATA_4	=	0x000c
+                           00000D   409 _DS1302_DATA_5	=	0x000d
+                           00000E   410 _DS1302_DATA_6	=	0x000e
+                           00000F   411 _DS1302_DATA_7	=	0x000f
+                                    412 ;--------------------------------------------------------
+                                    413 ; paged external ram data
+                                    414 ;--------------------------------------------------------
+                                    415 	.area PSEG    (PAG,XDATA)
+                                    416 ;--------------------------------------------------------
+                                    417 ; external ram data
+                                    418 ;--------------------------------------------------------
+                                    419 	.area XSEG    (XDATA)
+                           000000   420 _ds1302_sram_data	=	0x0000
+                                    421 ;--------------------------------------------------------
+                                    422 ; absolute external ram data
+                                    423 ;--------------------------------------------------------
+                                    424 	.area XABS    (ABS,XDATA)
+                                    425 ;--------------------------------------------------------
+                                    426 ; external initialized ram data
+                                    427 ;--------------------------------------------------------
+                                    428 	.area XISEG   (XDATA)
+                                    429 	.area HOME    (CODE)
+                                    430 	.area GSINIT0 (CODE)
+                                    431 	.area GSINIT1 (CODE)
+                                    432 	.area GSINIT2 (CODE)
+                                    433 	.area GSINIT3 (CODE)
+                                    434 	.area GSINIT4 (CODE)
+                                    435 	.area GSINIT5 (CODE)
+                                    436 	.area GSINIT  (CODE)
+                                    437 	.area GSFINAL (CODE)
+                                    438 	.area CSEG    (CODE)
+                                    439 ;--------------------------------------------------------
+                                    440 ; global & static initialisations
+                                    441 ;--------------------------------------------------------
+                                    442 	.area HOME    (CODE)
+                                    443 	.area GSINIT  (CODE)
+                                    444 	.area GSFINAL (CODE)
+                                    445 	.area GSINIT  (CODE)
+                                    446 ;--------------------------------------------------------
+                                    447 ; Home
+                                    448 ;--------------------------------------------------------
+                                    449 	.area HOME    (CODE)
+                                    450 	.area HOME    (CODE)
+                                    451 ;--------------------------------------------------------
+                                    452 ; code
+                                    453 ;--------------------------------------------------------
+                                    454 	.area CSEG    (CODE)
+                                    455 ;------------------------------------------------------------
+                                    456 ;Allocation info for local variables in function 'ds1302_reset'
+                                    457 ;------------------------------------------------------------
+                                    458 ;	../ds1302.c:55: void ds1302_reset() {
+                                    459 ;	-----------------------------------------
+                                    460 ;	 function ds1302_reset
+                                    461 ;	-----------------------------------------
+      000000                        462 _ds1302_reset:
+                           000007   463 	ar7 = 0x07
+                           000006   464 	ar6 = 0x06
+                           000005   465 	ar5 = 0x05
+                           000004   466 	ar4 = 0x04
+                           000003   467 	ar3 = 0x03
+                           000002   468 	ar2 = 0x02
+                           000001   469 	ar1 = 0x01
+                           000000   470 	ar0 = 0x00
+                                    471 ;	../ds1302.c:56: DS1302_IO = 0;
+                                    472 ;	assignBit
+      000000 C2 91            [12]  473 	clr	_PORT_P1_1
+                                    474 ;	../ds1302.c:57: DS1302_CLK = 0;
+                                    475 ;	assignBit
+      000002 C2 92            [12]  476 	clr	_PORT_P1_2
+                                    477 ;	../ds1302.c:58: DS1302_CE = 0;
+                                    478 ;	assignBit
+      000004 C2 90            [12]  479 	clr	_PORT_P1_0
+                                    480 ;	../ds1302.c:80: __endasm;
+      000006 00               [12]  481 	nop
+      000007 00               [12]  482 	nop
+      000008 00               [12]  483 	nop
+      000009 00               [12]  484 	nop
+      00000A 00               [12]  485 	nop
+      00000B 00               [12]  486 	nop
+      00000C 00               [12]  487 	nop
+      00000D 00               [12]  488 	nop
+      00000E 00               [12]  489 	nop
+      00000F 00               [12]  490 	nop
+      000010 00               [12]  491 	nop
+      000011 00               [12]  492 	nop
+      000012 00               [12]  493 	nop
+      000013 00               [12]  494 	nop
+      000014 00               [12]  495 	nop
+      000015 00               [12]  496 	nop
+      000016 00               [12]  497 	nop
+      000017 00               [12]  498 	nop
+      000018 00               [12]  499 	nop
+      000019 00               [12]  500 	nop
+      00001A 22               [24]  501 	ret
+                                    502 ;------------------------------------------------------------
+                                    503 ;Allocation info for local variables in function 'ds1302_start'
+                                    504 ;------------------------------------------------------------
+                                    505 ;command                   Allocated to registers 
+                                    506 ;------------------------------------------------------------
+                                    507 ;	../ds1302.c:83: void ds1302_start(uint8_t command) {
+                                    508 ;	-----------------------------------------
+                                    509 ;	 function ds1302_start
+                                    510 ;	-----------------------------------------
+      00001B                        511 _ds1302_start:
+      00001B 85 82 21         [24]  512 	mov	_DS1302_DATA,dpl
+                                    513 ;	../ds1302.c:86: DS1302_IO = DS1302_DATA_0;				 //Write first data bit
+                                    514 ;	assignBit
+      00001E A2 08            [12]  515 	mov	c,_DS1302_DATA_0
+      000020 92 91            [24]  516 	mov	_PORT_P1_1,c
+                                    517 ;	../ds1302.c:87: DS1302_CE = 1;							 //Raise CE
+                                    518 ;	assignBit
+      000022 D2 90            [12]  519 	setb	_PORT_P1_0
+                                    520 ;	../ds1302.c:111: __endasm;								 //Wait tCC
+      000024 00               [12]  521 	nop
+      000025 00               [12]  522 	nop
+      000026 00               [12]  523 	nop
+      000027 00               [12]  524 	nop
+      000028 00               [12]  525 	nop
+      000029 00               [12]  526 	nop
+      00002A 00               [12]  527 	nop
+      00002B 00               [12]  528 	nop
+      00002C 00               [12]  529 	nop
+      00002D 00               [12]  530 	nop
+      00002E 00               [12]  531 	nop
+      00002F 00               [12]  532 	nop
+      000030 00               [12]  533 	nop
+      000031 00               [12]  534 	nop
+      000032 00               [12]  535 	nop
+      000033 00               [12]  536 	nop
+      000034 00               [12]  537 	nop
+      000035 00               [12]  538 	nop
+      000036 00               [12]  539 	nop
+      000037 00               [12]  540 	nop
+      000038 00               [12]  541 	nop
+      000039 00               [12]  542 	nop
+                                    543 ;	../ds1302.c:112: DS1302_CLK = 1;					     	 //Raise CLK
+                                    544 ;	assignBit
+      00003A D2 92            [12]  545 	setb	_PORT_P1_2
+                                    546 ;	../ds1302.c:118: __endasm;						 		//Extend tCH
+      00003C 00               [12]  547 	nop
+      00003D 00               [12]  548 	nop
+      00003E 00               [12]  549 	nop
+      00003F 00               [12]  550 	nop
+                                    551 ;	../ds1302.c:119: DS1302_CLK = 0;							 //Drop CLK
+                                    552 ;	assignBit
+      000040 C2 92            [12]  553 	clr	_PORT_P1_2
+                                    554 ;	../ds1302.c:120: DS1302_IO = DS1302_DATA_1;				 //Write bit
+                                    555 ;	assignBit
+      000042 A2 09            [12]  556 	mov	c,_DS1302_DATA_1
+      000044 92 91            [24]  557 	mov	_PORT_P1_1,c
+                                    558 ;	../ds1302.c:121: DS1302_CLK = 1;						     //Raise CLK
+                                    559 ;	assignBit
+      000046 D2 92            [12]  560 	setb	_PORT_P1_2
+                                    561 ;	../ds1302.c:127: __endasm;						 		//Extend tCH
+      000048 00               [12]  562 	nop
+      000049 00               [12]  563 	nop
+      00004A 00               [12]  564 	nop
+      00004B 00               [12]  565 	nop
+                                    566 ;	../ds1302.c:128: DS1302_CLK = 0;							 //Drop CLK
+                                    567 ;	assignBit
+      00004C C2 92            [12]  568 	clr	_PORT_P1_2
+                                    569 ;	../ds1302.c:129: DS1302_IO = DS1302_DATA_2;				 //Write bit
+                                    570 ;	assignBit
+      00004E A2 0A            [12]  571 	mov	c,_DS1302_DATA_2
+      000050 92 91            [24]  572 	mov	_PORT_P1_1,c
+                                    573 ;	../ds1302.c:130: DS1302_CLK = 1;						     //Raise CLK
+                                    574 ;	assignBit
+      000052 D2 92            [12]  575 	setb	_PORT_P1_2
+                                    576 ;	../ds1302.c:136: __endasm;						 		//Extend tCH
+      000054 00               [12]  577 	nop
+      000055 00               [12]  578 	nop
+      000056 00               [12]  579 	nop
+      000057 00               [12]  580 	nop
+                                    581 ;	../ds1302.c:137: DS1302_CLK = 0;							 //Drop CLK
+                                    582 ;	assignBit
+      000058 C2 92            [12]  583 	clr	_PORT_P1_2
+                                    584 ;	../ds1302.c:138: DS1302_IO = DS1302_DATA_3;				 //Write bit
+                                    585 ;	assignBit
+      00005A A2 0B            [12]  586 	mov	c,_DS1302_DATA_3
+      00005C 92 91            [24]  587 	mov	_PORT_P1_1,c
+                                    588 ;	../ds1302.c:139: DS1302_CLK = 1;						     //Raise CLK
+                                    589 ;	assignBit
+      00005E D2 92            [12]  590 	setb	_PORT_P1_2
+                                    591 ;	../ds1302.c:145: __endasm;						 		//Extend tCH
+      000060 00               [12]  592 	nop
+      000061 00               [12]  593 	nop
+      000062 00               [12]  594 	nop
+      000063 00               [12]  595 	nop
+                                    596 ;	../ds1302.c:146: DS1302_CLK = 0;							 //Drop CLK
+                                    597 ;	assignBit
+      000064 C2 92            [12]  598 	clr	_PORT_P1_2
+                                    599 ;	../ds1302.c:147: DS1302_IO = DS1302_DATA_4;				 //Write bit
+                                    600 ;	assignBit
+      000066 A2 0C            [12]  601 	mov	c,_DS1302_DATA_4
+      000068 92 91            [24]  602 	mov	_PORT_P1_1,c
+                                    603 ;	../ds1302.c:148: DS1302_CLK = 1;						     //Raise CLK
+                                    604 ;	assignBit
+      00006A D2 92            [12]  605 	setb	_PORT_P1_2
+                                    606 ;	../ds1302.c:154: __endasm;						 		//Extend tCH
+      00006C 00               [12]  607 	nop
+      00006D 00               [12]  608 	nop
+      00006E 00               [12]  609 	nop
+      00006F 00               [12]  610 	nop
+                                    611 ;	../ds1302.c:155: DS1302_CLK = 0;							 //Drop CLK
+                                    612 ;	assignBit
+      000070 C2 92            [12]  613 	clr	_PORT_P1_2
+                                    614 ;	../ds1302.c:156: DS1302_IO = DS1302_DATA_5;				 //Write bit
+                                    615 ;	assignBit
+      000072 A2 0D            [12]  616 	mov	c,_DS1302_DATA_5
+      000074 92 91            [24]  617 	mov	_PORT_P1_1,c
+                                    618 ;	../ds1302.c:157: DS1302_CLK = 1;						     //Raise CLK
+                                    619 ;	assignBit
+      000076 D2 92            [12]  620 	setb	_PORT_P1_2
+                                    621 ;	../ds1302.c:163: __endasm;						 		//Extend tCH
+      000078 00               [12]  622 	nop
+      000079 00               [12]  623 	nop
+      00007A 00               [12]  624 	nop
+      00007B 00               [12]  625 	nop
+                                    626 ;	../ds1302.c:164: DS1302_CLK = 0;							 //Drop CLK
+                                    627 ;	assignBit
+      00007C C2 92            [12]  628 	clr	_PORT_P1_2
+                                    629 ;	../ds1302.c:165: DS1302_IO = DS1302_DATA_6;				 //Write bit
+                                    630 ;	assignBit
+      00007E A2 0E            [12]  631 	mov	c,_DS1302_DATA_6
+      000080 92 91            [24]  632 	mov	_PORT_P1_1,c
+                                    633 ;	../ds1302.c:166: DS1302_CLK = 1;						     //Raise CLK
+                                    634 ;	assignBit
+      000082 D2 92            [12]  635 	setb	_PORT_P1_2
+                                    636 ;	../ds1302.c:172: __endasm;						 		//Extend tCH
+      000084 00               [12]  637 	nop
+      000085 00               [12]  638 	nop
+      000086 00               [12]  639 	nop
+      000087 00               [12]  640 	nop
+                                    641 ;	../ds1302.c:173: DS1302_CLK = 0;							 //Drop CLK
+                                    642 ;	assignBit
+      000088 C2 92            [12]  643 	clr	_PORT_P1_2
+                                    644 ;	../ds1302.c:174: DS1302_IO = DS1302_DATA_7;				 //Write bit
+                                    645 ;	assignBit
+      00008A A2 0F            [12]  646 	mov	c,_DS1302_DATA_7
+      00008C 92 91            [24]  647 	mov	_PORT_P1_1,c
+                                    648 ;	../ds1302.c:175: DS1302_CLK = 1;						     //Raise CLK
+                                    649 ;	assignBit
+      00008E D2 92            [12]  650 	setb	_PORT_P1_2
+                                    651 ;	../ds1302.c:181: __endasm;						 		//Extend tCH
+      000090 00               [12]  652 	nop
+      000091 00               [12]  653 	nop
+      000092 00               [12]  654 	nop
+      000093 00               [12]  655 	nop
+                                    656 ;	../ds1302.c:182: DS1302_CLK = 0;							 //Drop CLK
+                                    657 ;	assignBit
+      000094 C2 92            [12]  658 	clr	_PORT_P1_2
+      000096 22               [24]  659 	ret
+                                    660 ;------------------------------------------------------------
+                                    661 ;Allocation info for local variables in function 'ds1302_read_byte_slow'
+                                    662 ;------------------------------------------------------------
+                                    663 ;	../ds1302.c:185: uint8_t ds1302_read_byte_slow() {
+                                    664 ;	-----------------------------------------
+                                    665 ;	 function ds1302_read_byte_slow
+                                    666 ;	-----------------------------------------
+      000097                        667 _ds1302_read_byte_slow:
+                                    668 ;	../ds1302.c:186: DS1302_IO = 1;		//Stop driving I/O line
+                                    669 ;	assignBit
+      000097 D2 91            [12]  670 	setb	_PORT_P1_1
+                                    671 ;	../ds1302.c:193: __endasm;
+      000099 00               [12]  672 	nop
+      00009A 00               [12]  673 	nop
+      00009B 00               [12]  674 	nop
+                                    675 ;	../ds1302.c:194: DS1302_DATA_0 = DS1302_IO;
+                                    676 ;	assignBit
+      00009C A2 91            [12]  677 	mov	c,_PORT_P1_1
+      00009E 92 08            [24]  678 	mov	_DS1302_DATA_0,c
+                                    679 ;	../ds1302.c:196: DS1302_CLK = 1;
+                                    680 ;	assignBit
+      0000A0 D2 92            [12]  681 	setb	_PORT_P1_2
+                                    682 ;	../ds1302.c:202: __endasm;
+      0000A2 00               [12]  683 	nop
+      0000A3 00               [12]  684 	nop
+      0000A4 00               [12]  685 	nop
+      0000A5 00               [12]  686 	nop
+                                    687 ;	../ds1302.c:203: DS1302_CLK = 0;
+                                    688 ;	assignBit
+      0000A6 C2 92            [12]  689 	clr	_PORT_P1_2
+                                    690 ;	../ds1302.c:208: __endasm;
+      0000A8 00               [12]  691 	nop
+      0000A9 00               [12]  692 	nop
+      0000AA 00               [12]  693 	nop
+                                    694 ;	../ds1302.c:209: DS1302_DATA_1 = DS1302_IO;
+                                    695 ;	assignBit
+      0000AB A2 91            [12]  696 	mov	c,_PORT_P1_1
+      0000AD 92 09            [24]  697 	mov	_DS1302_DATA_1,c
+                                    698 ;	../ds1302.c:211: DS1302_CLK = 1;
+                                    699 ;	assignBit
+      0000AF D2 92            [12]  700 	setb	_PORT_P1_2
+                                    701 ;	../ds1302.c:217: __endasm;
+      0000B1 00               [12]  702 	nop
+      0000B2 00               [12]  703 	nop
+      0000B3 00               [12]  704 	nop
+      0000B4 00               [12]  705 	nop
+                                    706 ;	../ds1302.c:218: DS1302_CLK = 0;
+                                    707 ;	assignBit
+      0000B5 C2 92            [12]  708 	clr	_PORT_P1_2
+                                    709 ;	../ds1302.c:223: __endasm;
+      0000B7 00               [12]  710 	nop
+      0000B8 00               [12]  711 	nop
+      0000B9 00               [12]  712 	nop
+                                    713 ;	../ds1302.c:224: DS1302_DATA_2 = DS1302_IO;
+                                    714 ;	assignBit
+      0000BA A2 91            [12]  715 	mov	c,_PORT_P1_1
+      0000BC 92 0A            [24]  716 	mov	_DS1302_DATA_2,c
+                                    717 ;	../ds1302.c:226: DS1302_CLK = 1;
+                                    718 ;	assignBit
+      0000BE D2 92            [12]  719 	setb	_PORT_P1_2
+                                    720 ;	../ds1302.c:232: __endasm;
+      0000C0 00               [12]  721 	nop
+      0000C1 00               [12]  722 	nop
+      0000C2 00               [12]  723 	nop
+      0000C3 00               [12]  724 	nop
+                                    725 ;	../ds1302.c:233: DS1302_CLK = 0;
+                                    726 ;	assignBit
+      0000C4 C2 92            [12]  727 	clr	_PORT_P1_2
+                                    728 ;	../ds1302.c:238: __endasm;
+      0000C6 00               [12]  729 	nop
+      0000C7 00               [12]  730 	nop
+      0000C8 00               [12]  731 	nop
+                                    732 ;	../ds1302.c:239: DS1302_DATA_3 = DS1302_IO;
+                                    733 ;	assignBit
+      0000C9 A2 91            [12]  734 	mov	c,_PORT_P1_1
+      0000CB 92 0B            [24]  735 	mov	_DS1302_DATA_3,c
+                                    736 ;	../ds1302.c:241: DS1302_CLK = 1;
+                                    737 ;	assignBit
+      0000CD D2 92            [12]  738 	setb	_PORT_P1_2
+                                    739 ;	../ds1302.c:247: __endasm;
+      0000CF 00               [12]  740 	nop
+      0000D0 00               [12]  741 	nop
+      0000D1 00               [12]  742 	nop
+      0000D2 00               [12]  743 	nop
+                                    744 ;	../ds1302.c:248: DS1302_CLK = 0;
+                                    745 ;	assignBit
+      0000D3 C2 92            [12]  746 	clr	_PORT_P1_2
+                                    747 ;	../ds1302.c:253: __endasm;
+      0000D5 00               [12]  748 	nop
+      0000D6 00               [12]  749 	nop
+      0000D7 00               [12]  750 	nop
+                                    751 ;	../ds1302.c:254: DS1302_DATA_4 = DS1302_IO;
+                                    752 ;	assignBit
+      0000D8 A2 91            [12]  753 	mov	c,_PORT_P1_1
+      0000DA 92 0C            [24]  754 	mov	_DS1302_DATA_4,c
+                                    755 ;	../ds1302.c:256: DS1302_CLK = 1;
+                                    756 ;	assignBit
+      0000DC D2 92            [12]  757 	setb	_PORT_P1_2
+                                    758 ;	../ds1302.c:262: __endasm;
+      0000DE 00               [12]  759 	nop
+      0000DF 00               [12]  760 	nop
+      0000E0 00               [12]  761 	nop
+      0000E1 00               [12]  762 	nop
+                                    763 ;	../ds1302.c:263: DS1302_CLK = 0;
+                                    764 ;	assignBit
+      0000E2 C2 92            [12]  765 	clr	_PORT_P1_2
+                                    766 ;	../ds1302.c:268: __endasm;
+      0000E4 00               [12]  767 	nop
+      0000E5 00               [12]  768 	nop
+      0000E6 00               [12]  769 	nop
+                                    770 ;	../ds1302.c:269: DS1302_DATA_5 = DS1302_IO;
+                                    771 ;	assignBit
+      0000E7 A2 91            [12]  772 	mov	c,_PORT_P1_1
+      0000E9 92 0D            [24]  773 	mov	_DS1302_DATA_5,c
+                                    774 ;	../ds1302.c:271: DS1302_CLK = 1;
+                                    775 ;	assignBit
+      0000EB D2 92            [12]  776 	setb	_PORT_P1_2
+                                    777 ;	../ds1302.c:277: __endasm;
+      0000ED 00               [12]  778 	nop
+      0000EE 00               [12]  779 	nop
+      0000EF 00               [12]  780 	nop
+      0000F0 00               [12]  781 	nop
+                                    782 ;	../ds1302.c:278: DS1302_CLK = 0;
+                                    783 ;	assignBit
+      0000F1 C2 92            [12]  784 	clr	_PORT_P1_2
+                                    785 ;	../ds1302.c:283: __endasm;
+      0000F3 00               [12]  786 	nop
+      0000F4 00               [12]  787 	nop
+      0000F5 00               [12]  788 	nop
+                                    789 ;	../ds1302.c:284: DS1302_DATA_6 = DS1302_IO;
+                                    790 ;	assignBit
+      0000F6 A2 91            [12]  791 	mov	c,_PORT_P1_1
+      0000F8 92 0E            [24]  792 	mov	_DS1302_DATA_6,c
+                                    793 ;	../ds1302.c:286: DS1302_CLK = 1;
+                                    794 ;	assignBit
+      0000FA D2 92            [12]  795 	setb	_PORT_P1_2
+                                    796 ;	../ds1302.c:292: __endasm;
+      0000FC 00               [12]  797 	nop
+      0000FD 00               [12]  798 	nop
+      0000FE 00               [12]  799 	nop
+      0000FF 00               [12]  800 	nop
+                                    801 ;	../ds1302.c:293: DS1302_CLK = 0;
+                                    802 ;	assignBit
+      000100 C2 92            [12]  803 	clr	_PORT_P1_2
+                                    804 ;	../ds1302.c:298: __endasm;
+      000102 00               [12]  805 	nop
+      000103 00               [12]  806 	nop
+      000104 00               [12]  807 	nop
+                                    808 ;	../ds1302.c:299: DS1302_DATA_7 = DS1302_IO;
+                                    809 ;	assignBit
+      000105 A2 91            [12]  810 	mov	c,_PORT_P1_1
+      000107 92 0F            [24]  811 	mov	_DS1302_DATA_7,c
+                                    812 ;	../ds1302.c:300: DS1302_CLK = 1;
+                                    813 ;	assignBit
+      000109 D2 92            [12]  814 	setb	_PORT_P1_2
+                                    815 ;	../ds1302.c:306: __endasm;
+      00010B 00               [12]  816 	nop
+      00010C 00               [12]  817 	nop
+      00010D 00               [12]  818 	nop
+      00010E 00               [12]  819 	nop
+                                    820 ;	../ds1302.c:307: DS1302_CLK = 0;
+                                    821 ;	assignBit
+      00010F C2 92            [12]  822 	clr	_PORT_P1_2
+                                    823 ;	../ds1302.c:309: return DS1302_DATA;
+      000111 85 21 82         [24]  824 	mov	dpl,_DS1302_DATA
+      000114 22               [24]  825 	ret
+                                    826 ;------------------------------------------------------------
+                                    827 ;Allocation info for local variables in function 'ds1302_write_byte_slow'
+                                    828 ;------------------------------------------------------------
+                                    829 ;byte                      Allocated to registers 
+                                    830 ;------------------------------------------------------------
+                                    831 ;	../ds1302.c:312: void ds1302_write_byte_slow(uint8_t byte) {
+                                    832 ;	-----------------------------------------
+                                    833 ;	 function ds1302_write_byte_slow
+                                    834 ;	-----------------------------------------
+      000115                        835 _ds1302_write_byte_slow:
+      000115 85 82 21         [24]  836 	mov	_DS1302_DATA,dpl
+                                    837 ;	../ds1302.c:315: DS1302_IO = DS1302_DATA_0;
+                                    838 ;	assignBit
+      000118 A2 08            [12]  839 	mov	c,_DS1302_DATA_0
+      00011A 92 91            [24]  840 	mov	_PORT_P1_1,c
+                                    841 ;	../ds1302.c:316: DS1302_CLK = 1;
+                                    842 ;	assignBit
+      00011C D2 92            [12]  843 	setb	_PORT_P1_2
+                                    844 ;	../ds1302.c:322: __endasm;
+      00011E 00               [12]  845 	nop
+      00011F 00               [12]  846 	nop
+      000120 00               [12]  847 	nop
+      000121 00               [12]  848 	nop
+                                    849 ;	../ds1302.c:323: DS1302_CLK = 0;
+                                    850 ;	assignBit
+      000122 C2 92            [12]  851 	clr	_PORT_P1_2
+                                    852 ;	../ds1302.c:325: DS1302_IO = DS1302_DATA_1;
+                                    853 ;	assignBit
+      000124 A2 09            [12]  854 	mov	c,_DS1302_DATA_1
+      000126 92 91            [24]  855 	mov	_PORT_P1_1,c
+                                    856 ;	../ds1302.c:326: DS1302_CLK = 1;
+                                    857 ;	assignBit
+      000128 D2 92            [12]  858 	setb	_PORT_P1_2
+                                    859 ;	../ds1302.c:332: __endasm;
+      00012A 00               [12]  860 	nop
+      00012B 00               [12]  861 	nop
+      00012C 00               [12]  862 	nop
+      00012D 00               [12]  863 	nop
+                                    864 ;	../ds1302.c:333: DS1302_CLK = 0;
+                                    865 ;	assignBit
+      00012E C2 92            [12]  866 	clr	_PORT_P1_2
+                                    867 ;	../ds1302.c:336: DS1302_IO = DS1302_DATA_2;
+                                    868 ;	assignBit
+      000130 A2 0A            [12]  869 	mov	c,_DS1302_DATA_2
+      000132 92 91            [24]  870 	mov	_PORT_P1_1,c
+                                    871 ;	../ds1302.c:337: DS1302_CLK = 1;
+                                    872 ;	assignBit
+      000134 D2 92            [12]  873 	setb	_PORT_P1_2
+                                    874 ;	../ds1302.c:343: __endasm;
+      000136 00               [12]  875 	nop
+      000137 00               [12]  876 	nop
+      000138 00               [12]  877 	nop
+      000139 00               [12]  878 	nop
+                                    879 ;	../ds1302.c:344: DS1302_CLK = 0;
+                                    880 ;	assignBit
+      00013A C2 92            [12]  881 	clr	_PORT_P1_2
+                                    882 ;	../ds1302.c:346: DS1302_IO = DS1302_DATA_3;
+                                    883 ;	assignBit
+      00013C A2 0B            [12]  884 	mov	c,_DS1302_DATA_3
+      00013E 92 91            [24]  885 	mov	_PORT_P1_1,c
+                                    886 ;	../ds1302.c:347: DS1302_CLK = 1;
+                                    887 ;	assignBit
+      000140 D2 92            [12]  888 	setb	_PORT_P1_2
+                                    889 ;	../ds1302.c:353: __endasm;
+      000142 00               [12]  890 	nop
+      000143 00               [12]  891 	nop
+      000144 00               [12]  892 	nop
+      000145 00               [12]  893 	nop
+                                    894 ;	../ds1302.c:354: DS1302_CLK = 0;
+                                    895 ;	assignBit
+      000146 C2 92            [12]  896 	clr	_PORT_P1_2
+                                    897 ;	../ds1302.c:356: DS1302_IO = DS1302_DATA_4;
+                                    898 ;	assignBit
+      000148 A2 0C            [12]  899 	mov	c,_DS1302_DATA_4
+      00014A 92 91            [24]  900 	mov	_PORT_P1_1,c
+                                    901 ;	../ds1302.c:357: DS1302_CLK = 1;
+                                    902 ;	assignBit
+      00014C D2 92            [12]  903 	setb	_PORT_P1_2
+                                    904 ;	../ds1302.c:363: __endasm;
+      00014E 00               [12]  905 	nop
+      00014F 00               [12]  906 	nop
+      000150 00               [12]  907 	nop
+      000151 00               [12]  908 	nop
+                                    909 ;	../ds1302.c:364: DS1302_CLK = 0;
+                                    910 ;	assignBit
+      000152 C2 92            [12]  911 	clr	_PORT_P1_2
+                                    912 ;	../ds1302.c:366: DS1302_IO = DS1302_DATA_5;
+                                    913 ;	assignBit
+      000154 A2 0D            [12]  914 	mov	c,_DS1302_DATA_5
+      000156 92 91            [24]  915 	mov	_PORT_P1_1,c
+                                    916 ;	../ds1302.c:367: DS1302_CLK = 1;
+                                    917 ;	assignBit
+      000158 D2 92            [12]  918 	setb	_PORT_P1_2
+                                    919 ;	../ds1302.c:373: __endasm;
+      00015A 00               [12]  920 	nop
+      00015B 00               [12]  921 	nop
+      00015C 00               [12]  922 	nop
+      00015D 00               [12]  923 	nop
+                                    924 ;	../ds1302.c:374: DS1302_CLK = 0;
+                                    925 ;	assignBit
+      00015E C2 92            [12]  926 	clr	_PORT_P1_2
+                                    927 ;	../ds1302.c:375: DS1302_IO = DS1302_DATA_6;
+                                    928 ;	assignBit
+      000160 A2 0E            [12]  929 	mov	c,_DS1302_DATA_6
+      000162 92 91            [24]  930 	mov	_PORT_P1_1,c
+                                    931 ;	../ds1302.c:377: DS1302_CLK = 1;
+                                    932 ;	assignBit
+      000164 D2 92            [12]  933 	setb	_PORT_P1_2
+                                    934 ;	../ds1302.c:383: __endasm;
+      000166 00               [12]  935 	nop
+      000167 00               [12]  936 	nop
+      000168 00               [12]  937 	nop
+      000169 00               [12]  938 	nop
+                                    939 ;	../ds1302.c:384: DS1302_CLK = 0;
+                                    940 ;	assignBit
+      00016A C2 92            [12]  941 	clr	_PORT_P1_2
+                                    942 ;	../ds1302.c:386: DS1302_IO = DS1302_DATA_7;
+                                    943 ;	assignBit
+      00016C A2 0F            [12]  944 	mov	c,_DS1302_DATA_7
+      00016E 92 91            [24]  945 	mov	_PORT_P1_1,c
+                                    946 ;	../ds1302.c:387: DS1302_CLK = 1;
+                                    947 ;	assignBit
+      000170 D2 92            [12]  948 	setb	_PORT_P1_2
+                                    949 ;	../ds1302.c:393: __endasm;
+      000172 00               [12]  950 	nop
+      000173 00               [12]  951 	nop
+      000174 00               [12]  952 	nop
+      000175 00               [12]  953 	nop
+                                    954 ;	../ds1302.c:394: DS1302_CLK = 0;
+                                    955 ;	assignBit
+      000176 C2 92            [12]  956 	clr	_PORT_P1_2
+      000178 22               [24]  957 	ret
+                                    958 ;------------------------------------------------------------
+                                    959 ;Allocation info for local variables in function 'ds1302_set_time'
+                                    960 ;------------------------------------------------------------
+                                    961 ;index                     Allocated to registers r7 
+                                    962 ;------------------------------------------------------------
+                                    963 ;	../ds1302.c:398: void ds1302_set_time() {
+                                    964 ;	-----------------------------------------
+                                    965 ;	 function ds1302_set_time
+                                    966 ;	-----------------------------------------
+      000179                        967 _ds1302_set_time:
+                                    968 ;	../ds1302.c:400: ds1302_start(0x8e); 	//Start single byte write to control register
+      000179 75 82 8E         [24]  969 	mov	dpl,#0x8e
+      00017C 12r00r1B         [24]  970 	lcall	_ds1302_start
+                                    971 ;	../ds1302.c:401: ds1302_write_byte_slow(0x00);//Write 0x00 to control register, disable WP
+      00017F 75 82 00         [24]  972 	mov	dpl,#0x00
+      000182 12r01r15         [24]  973 	lcall	_ds1302_write_byte_slow
+                                    974 ;	/home/shenghao/workspace/TESTMCS51/ds1302.h:322: DS1302_CE = 0; //Drop CE to end communication.
+                                    975 ;	assignBit
+      000185 C2 90            [12]  976 	clr	_PORT_P1_0
+                                    977 ;	../ds1302.c:404: ds1302_reset(); 		//Reset DS1302 because we're doing a fast second op.
+      000187 12r00r00         [24]  978 	lcall	_ds1302_reset
+                                    979 ;	../ds1302.c:406: ds1302_start(0xbe);		//Start clock burst write
+      00018A 75 82 BE         [24]  980 	mov	dpl,#0xbe
+      00018D 12r00r1B         [24]  981 	lcall	_ds1302_start
+                                    982 ;	../ds1302.c:408: for(index=0;index!=0x08;index++){
+      000190 7F 00            [12]  983 	mov	r7,#0x00
+      000192                        984 00104$:
+                                    985 ;	../ds1302.c:409: ds1302_write_byte_slow(ds1302_struct_addr[index]);
+      000192 90r00r00         [24]  986 	mov	dptr,#_ds1302_struct_addr
+      000195 E4               [12]  987 	clr	a
+      000196 93               [24]  988 	movc	a,@a+dptr
+      000197 2F               [12]  989 	add	a,r7
+      000198 F9               [12]  990 	mov	r1,a
+      000199 87 82            [24]  991 	mov	dpl,@r1
+      00019B C0 07            [24]  992 	push	ar7
+      00019D 12r01r15         [24]  993 	lcall	_ds1302_write_byte_slow
+      0001A0 D0 07            [24]  994 	pop	ar7
+                                    995 ;	../ds1302.c:408: for(index=0;index!=0x08;index++){
+      0001A2 0F               [12]  996 	inc	r7
+      0001A3 BF 08 EC         [24]  997 	cjne	r7,#0x08,00104$
+                                    998 ;	/home/shenghao/workspace/TESTMCS51/ds1302.h:322: DS1302_CE = 0; //Drop CE to end communication.
+                                    999 ;	assignBit
+      0001A6 C2 90            [12] 1000 	clr	_PORT_P1_0
+                                   1001 ;	../ds1302.c:411: ds1302_end();
+      0001A8 22               [24] 1002 	ret
+                                   1003 ;------------------------------------------------------------
+                                   1004 ;Allocation info for local variables in function 'ds1302_read_SRAM'
+                                   1005 ;------------------------------------------------------------
+                                   1006 ;index                     Allocated to registers r7 
+                                   1007 ;------------------------------------------------------------
+                                   1008 ;	../ds1302.c:414: void ds1302_read_SRAM() {
+                                   1009 ;	-----------------------------------------
+                                   1010 ;	 function ds1302_read_SRAM
+                                   1011 ;	-----------------------------------------
+      0001A9                       1012 _ds1302_read_SRAM:
+                                   1013 ;	../ds1302.c:416: ds1302_start(0xff);		//Start burst read from SRAM
+      0001A9 75 82 FF         [24] 1014 	mov	dpl,#0xff
+      0001AC 12r00r1B         [24] 1015 	lcall	_ds1302_start
+                                   1016 ;	../ds1302.c:417: for(index = 0;index!=0x1f;index++){
+      0001AF 7F 00            [12] 1017 	mov	r7,#0x00
+      0001B1                       1018 00103$:
+                                   1019 ;	../ds1302.c:418: ds1302_sram_data[index] = ds1302_read_byte_slow(); //Read bytes from DS1302
+      0001B1 8F 05            [24] 1020 	mov	ar5,r7
+      0001B3 7E 00            [12] 1021 	mov	r6,#(_ds1302_sram_data >> 8)
+      0001B5 C0 07            [24] 1022 	push	ar7
+      0001B7 C0 06            [24] 1023 	push	ar6
+      0001B9 C0 05            [24] 1024 	push	ar5
+      0001BB 12r00r97         [24] 1025 	lcall	_ds1302_read_byte_slow
+      0001BE AC 82            [24] 1026 	mov	r4,dpl
+      0001C0 D0 05            [24] 1027 	pop	ar5
+      0001C2 D0 06            [24] 1028 	pop	ar6
+      0001C4 D0 07            [24] 1029 	pop	ar7
+      0001C6 8D 82            [24] 1030 	mov	dpl,r5
+      0001C8 8E 83            [24] 1031 	mov	dph,r6
+      0001CA EC               [12] 1032 	mov	a,r4
+      0001CB F0               [24] 1033 	movx	@dptr,a
+                                   1034 ;	../ds1302.c:417: for(index = 0;index!=0x1f;index++){
+      0001CC 0F               [12] 1035 	inc	r7
+      0001CD BF 1F E1         [24] 1036 	cjne	r7,#0x1f,00103$
+                                   1037 ;	/home/shenghao/workspace/TESTMCS51/ds1302.h:322: DS1302_CE = 0; //Drop CE to end communication.
+                                   1038 ;	assignBit
+      0001D0 C2 90            [12] 1039 	clr	_PORT_P1_0
+                                   1040 ;	../ds1302.c:420: ds1302_end();			//Terminate burst read
+      0001D2 22               [24] 1041 	ret
+                                   1042 ;------------------------------------------------------------
+                                   1043 ;Allocation info for local variables in function 'ds1302_write_SRAM'
+                                   1044 ;------------------------------------------------------------
+                                   1045 ;index                     Allocated to registers r7 
+                                   1046 ;------------------------------------------------------------
+                                   1047 ;	../ds1302.c:423: void ds1302_write_SRAM() {
+                                   1048 ;	-----------------------------------------
+                                   1049 ;	 function ds1302_write_SRAM
+                                   1050 ;	-----------------------------------------
+      0001D3                       1051 _ds1302_write_SRAM:
+                                   1052 ;	../ds1302.c:425: ds1302_start(0xfe);		//Start burst write to SRAM
+      0001D3 75 82 FE         [24] 1053 	mov	dpl,#0xfe
+      0001D6 12r00r1B         [24] 1054 	lcall	_ds1302_start
+                                   1055 ;	../ds1302.c:426: for(index = 0;index!=0x1f;index++){
+      0001D9 7F 00            [12] 1056 	mov	r7,#0x00
+      0001DB                       1057 00103$:
+                                   1058 ;	../ds1302.c:427: ds1302_write_byte_slow(ds1302_sram_data[index]);	  //Write bytes to DS1302
+      0001DB 8F 82            [24] 1059 	mov	dpl,r7
+      0001DD 75 83 00         [24] 1060 	mov	dph,#(_ds1302_sram_data >> 8)
+      0001E0 E0               [24] 1061 	movx	a,@dptr
+      0001E1 F5 82            [12] 1062 	mov	dpl,a
+      0001E3 C0 07            [24] 1063 	push	ar7
+      0001E5 12r01r15         [24] 1064 	lcall	_ds1302_write_byte_slow
+      0001E8 D0 07            [24] 1065 	pop	ar7
+                                   1066 ;	../ds1302.c:426: for(index = 0;index!=0x1f;index++){
+      0001EA 0F               [12] 1067 	inc	r7
+      0001EB BF 1F ED         [24] 1068 	cjne	r7,#0x1f,00103$
+                                   1069 ;	/home/shenghao/workspace/TESTMCS51/ds1302.h:322: DS1302_CE = 0; //Drop CE to end communication.
+                                   1070 ;	assignBit
+      0001EE C2 90            [12] 1071 	clr	_PORT_P1_0
+                                   1072 ;	../ds1302.c:429: ds1302_end();			//Terminate burst write
+      0001F0 22               [24] 1073 	ret
+                                   1074 ;------------------------------------------------------------
+                                   1075 ;Allocation info for local variables in function 'ds1302_check_SRAM'
+                                   1076 ;------------------------------------------------------------
+                                   1077 ;val                       Allocated to registers r6 r5 
+                                   1078 ;------------------------------------------------------------
+                                   1079 ;	../ds1302.c:432: uint8_t ds1302_check_SRAM() __reentrant {
+                                   1080 ;	-----------------------------------------
+                                   1081 ;	 function ds1302_check_SRAM
+                                   1082 ;	-----------------------------------------
+      0001F1                       1083 _ds1302_check_SRAM:
+                                   1084 ;	../ds1302.c:433: uint16_t val = ((ds1302_sram_data[0]) | (ds1302_sram_data[1] << 8));
+      0001F1 90 00 00         [24] 1085 	mov	dptr,#_ds1302_sram_data
+      0001F4 E0               [24] 1086 	movx	a,@dptr
+      0001F5 FF               [12] 1087 	mov	r7,a
+      0001F6 90 00 01         [24] 1088 	mov	dptr,#(_ds1302_sram_data + 0x0001)
+      0001F9 E0               [24] 1089 	movx	a,@dptr
+      0001FA FD               [12] 1090 	mov	r5,a
+      0001FB E4               [12] 1091 	clr	a
+      0001FC FE               [12] 1092 	mov	r6,a
+      0001FD FC               [12] 1093 	mov	r4,a
+      0001FE EF               [12] 1094 	mov	a,r7
+      0001FF 42 06            [12] 1095 	orl	ar6,a
+      000201 EC               [12] 1096 	mov	a,r4
+      000202 42 05            [12] 1097 	orl	ar5,a
+                                   1098 ;	../ds1302.c:434: if(crcSlow(ds1302_sram_data + DS1302_CRC_SIZE,DS1302_BBSRAM_SIZE - DS1302_CRC_SIZE) == val)
+      000204 75*00 1D         [24] 1099 	mov	_crcSlow_PARM_2,#0x1d
+      000207 90 00 02         [24] 1100 	mov	dptr,#(_ds1302_sram_data + 0x0002)
+      00020A 75 F0 00         [24] 1101 	mov	b,#0x00
+      00020D C0 06            [24] 1102 	push	ar6
+      00020F C0 05            [24] 1103 	push	ar5
+      000211 12r00r00         [24] 1104 	lcall	_crcSlow
+      000214 AC 82            [24] 1105 	mov	r4,dpl
+      000216 AF 83            [24] 1106 	mov	r7,dph
+      000218 D0 05            [24] 1107 	pop	ar5
+      00021A D0 06            [24] 1108 	pop	ar6
+      00021C EC               [12] 1109 	mov	a,r4
+      00021D B5 06 08         [24] 1110 	cjne	a,ar6,00102$
+      000220 EF               [12] 1111 	mov	a,r7
+      000221 B5 05 04         [24] 1112 	cjne	a,ar5,00102$
+                                   1113 ;	../ds1302.c:435: return 1;
+      000224 75 82 01         [24] 1114 	mov	dpl,#0x01
+      000227 22               [24] 1115 	ret
+      000228                       1116 00102$:
+                                   1117 ;	../ds1302.c:437: return 0;
+      000228 75 82 00         [24] 1118 	mov	dpl,#0x00
+      00022B 22               [24] 1119 	ret
+                                   1120 ;------------------------------------------------------------
+                                   1121 ;Allocation info for local variables in function 'ds1302_calculate_CRC'
+                                   1122 ;------------------------------------------------------------
+                                   1123 ;crcval                    Allocated to registers r6 r7 
+                                   1124 ;------------------------------------------------------------
+                                   1125 ;	../ds1302.c:440: void ds1302_calculate_CRC() __reentrant {
+                                   1126 ;	-----------------------------------------
+                                   1127 ;	 function ds1302_calculate_CRC
+                                   1128 ;	-----------------------------------------
+      00022C                       1129 _ds1302_calculate_CRC:
+                                   1130 ;	../ds1302.c:441: uint16_t crcval = crcSlow(ds1302_sram_data + DS1302_CRC_SIZE,DS1302_BBSRAM_SIZE - DS1302_CRC_SIZE);
+      00022C 75*00 1D         [24] 1131 	mov	_crcSlow_PARM_2,#0x1d
+      00022F 90 00 02         [24] 1132 	mov	dptr,#(_ds1302_sram_data + 0x0002)
+      000232 75 F0 00         [24] 1133 	mov	b,#0x00
+      000235 12r00r00         [24] 1134 	lcall	_crcSlow
+      000238 AE 82            [24] 1135 	mov	r6,dpl
+      00023A AF 83            [24] 1136 	mov	r7,dph
+                                   1137 ;	../ds1302.c:442: CRC_LSB = ((uint8_t)(crcval & 0x00ff));
+      00023C 8E 05            [24] 1138 	mov	ar5,r6
+      00023E 90 00 00         [24] 1139 	mov	dptr,#_ds1302_sram_data
+      000241 ED               [12] 1140 	mov	a,r5
+      000242 F0               [24] 1141 	movx	@dptr,a
+                                   1142 ;	../ds1302.c:443: CRC_MSB = ((uint8_t)(crcval >> 8));
+      000243 8F 06            [24] 1143 	mov	ar6,r7
+      000245 90 00 01         [24] 1144 	mov	dptr,#(_ds1302_sram_data + 0x0001)
+      000248 EE               [12] 1145 	mov	a,r6
+      000249 F0               [24] 1146 	movx	@dptr,a
+      00024A 22               [24] 1147 	ret
+                                   1148 ;------------------------------------------------------------
+                                   1149 ;Allocation info for local variables in function 'ds1302_power_loss_reset'
+                                   1150 ;------------------------------------------------------------
+                                   1151 ;	../ds1302.c:446: void ds1302_power_loss_reset() {
+                                   1152 ;	-----------------------------------------
+                                   1153 ;	 function ds1302_power_loss_reset
+                                   1154 ;	-----------------------------------------
+      00024B                       1155 _ds1302_power_loss_reset:
+                                   1156 ;	../ds1302.c:447: memcpy(&ds1302,&ds1302_init,sizeof(ds1302_data));
+      00024B 75*00r00         [24] 1157 	mov	_memcpy_PARM_2,#_ds1302_init
+      00024E 75*01s32         [24] 1158 	mov	(_memcpy_PARM_2 + 1),#(_ds1302_init >> 8)
+      000251 75*02 80         [24] 1159 	mov	(_memcpy_PARM_2 + 2),#0x80
+      000254 75*00 08         [24] 1160 	mov	_memcpy_PARM_3,#0x08
+      000257 75*01 00         [24] 1161 	mov	(_memcpy_PARM_3 + 1),#0x00
+      00025A 90r00r00         [24] 1162 	mov	dptr,#_ds1302
+      00025D 75 F0 40         [24] 1163 	mov	b,#0x40
+      000260 12r00r00         [24] 1164 	lcall	_memcpy
+                                   1165 ;	../ds1302.c:448: memcpy(&ds1302_sram_data,&ds1302_sram_init,sizeof(ds1302_sram_init));
+      000263 75*00r08         [24] 1166 	mov	_memcpy_PARM_2,#_ds1302_sram_init
+      000266 75*01s32         [24] 1167 	mov	(_memcpy_PARM_2 + 1),#(_ds1302_sram_init >> 8)
+      000269 75*02 80         [24] 1168 	mov	(_memcpy_PARM_2 + 2),#0x80
+      00026C 75*00 1F         [24] 1169 	mov	_memcpy_PARM_3,#0x1f
+      00026F 75*01 00         [24] 1170 	mov	(_memcpy_PARM_3 + 1),#0x00
+      000272 90 00 00         [24] 1171 	mov	dptr,#_ds1302_sram_data
+      000275 75 F0 00         [24] 1172 	mov	b,#0x00
+      000278 12r00r00         [24] 1173 	lcall	_memcpy
+                                   1174 ;	../ds1302.c:449: ds1302_calculate_CRC();
+      00027B 12r02r2C         [24] 1175 	lcall	_ds1302_calculate_CRC
+                                   1176 ;	../ds1302.c:450: ds1302_set_time();
+      00027E 12r01r79         [24] 1177 	lcall	_ds1302_set_time
+                                   1178 ;	../ds1302.c:451: ds1302_reset();
+      000281 12r00r00         [24] 1179 	lcall	_ds1302_reset
+                                   1180 ;	../ds1302.c:452: ds1302_set_time();
+      000284 12r01r79         [24] 1181 	lcall	_ds1302_set_time
+                                   1182 ;	../ds1302.c:453: ds1302_reset();
+      000287 12r00r00         [24] 1183 	lcall	_ds1302_reset
+                                   1184 ;	../ds1302.c:454: ds1302_write_SRAM();
+      00028A 02r01rD3         [24] 1185 	ljmp	_ds1302_write_SRAM
+                                   1186 ;------------------------------------------------------------
+                                   1187 ;Allocation info for local variables in function 'convert_24h_to_12h'
+                                   1188 ;------------------------------------------------------------
+                                   1189 ;h_24                      Allocated to registers r7 
+                                   1190 ;------------------------------------------------------------
+                                   1191 ;	../ds1302.c:457: uint8_t convert_24h_to_12h(uint8_t h_24) {
+                                   1192 ;	-----------------------------------------
+                                   1193 ;	 function convert_24h_to_12h
+                                   1194 ;	-----------------------------------------
+      00028D                       1195 _convert_24h_to_12h:
+                                   1196 ;	../ds1302.c:496: return lut_24h_to_12h[h_24];
+      00028D E5 82            [12] 1197 	mov	a,dpl
+      00028F 90r32r27         [24] 1198 	mov	dptr,#_convert_24h_to_12h_lut_24h_to_12h_1_101
+      000292 93               [24] 1199 	movc	a,@a+dptr
+      000293 F5 82            [12] 1200 	mov	dpl,a
+      000295 22               [24] 1201 	ret
+                                   1202 ;------------------------------------------------------------
+                                   1203 ;Allocation info for local variables in function 'bcd_add'
+                                   1204 ;------------------------------------------------------------
+                                   1205 ;v2                        Allocated with name '_bcd_add_PARM_2'
+                                   1206 ;v1                        Allocated to registers 
+                                   1207 ;------------------------------------------------------------
+                                   1208 ;	../ds1302.c:500: uint8_t bcd_add(uint8_t v1,uint8_t v2) __naked {
+                                   1209 ;	-----------------------------------------
+                                   1210 ;	 function bcd_add
+                                   1211 ;	-----------------------------------------
+      000296                       1212 _bcd_add:
+                                   1213 ;	naked function: no prologue.
+                                   1214 ;	../ds1302.c:511: __endasm;
+      000296 C0 E0            [24] 1215 	push	a
+      000298 C0 D0            [24] 1216 	push	psw
+      00029A E5 82            [12] 1217 	mov	a,dpl
+      00029C 25*00            [12] 1218 	add	a,_bcd_add_PARM_2
+      00029E D4               [12] 1219 	da	a
+      00029F F5 82            [12] 1220 	mov	dpl,a
+      0002A1 D0 D0            [24] 1221 	pop	psw
+      0002A3 D0 E0            [24] 1222 	pop	a
+      0002A5 22               [24] 1223 	ret
+                                   1224 ;	naked function: no epilogue.
+                                   1225 ;------------------------------------------------------------
+                                   1226 ;Allocation info for local variables in function 'bcd_add_16'
+                                   1227 ;------------------------------------------------------------
+                                   1228 ;op2                       Allocated with name '_bcd_add_16_PARM_2'
+                                   1229 ;op1                       Allocated to registers 
+                                   1230 ;------------------------------------------------------------
+                                   1231 ;	../ds1302.c:514: uint16_t bcd_add_16(uint16_t op1,uint16_t op2) __naked {
+                                   1232 ;	-----------------------------------------
+                                   1233 ;	 function bcd_add_16
+                                   1234 ;	-----------------------------------------
+      0002A6                       1235 _bcd_add_16:
+                                   1236 ;	naked function: no prologue.
+                                   1237 ;	../ds1302.c:530: __endasm;
+      0002A6 C0 E0            [24] 1238 	push	a
+      0002A8 C0 D0            [24] 1239 	push	psw
+      0002AA C2 D7            [12] 1240 	clr	_CY ;clear carry
+      0002AC E5 82            [12] 1241 	mov	a,dpl ;perform addition of lsb
+      0002AE 25*00            [12] 1242 	add	a,(_bcd_add_16_PARM_2)
+      0002B0 D4               [12] 1243 	da	a ;decimal adjust
+      0002B1 F5 82            [12] 1244 	mov	dpl,a ;move result lsb
+      0002B3 E5 83            [12] 1245 	mov	a,dph ;add carry bit
+      0002B5 35*01            [12] 1246 	addc	a,(_bcd_add_16_PARM_2+1) ;add msb
+      0002B7 D4               [12] 1247 	da	a ;decimal adjust
+      0002B8 F5 83            [12] 1248 	mov	dph,a
+      0002BA D0 D0            [24] 1249 	pop	psw
+      0002BC D0 E0            [24] 1250 	pop	a
+      0002BE 22               [24] 1251 	ret
+                                   1252 ;	naked function: no epilogue.
+                                   1253 	.area CSEG    (CODE)
+                                   1254 	.area CONST   (CODE)
+      000000                       1255 _ds1302_struct_addr:
+      000000r00                    1256 	.db _ds1302
+                                   1257 	.area XINIT   (CODE)
+                                   1258 	.area CABS    (ABS,CODE)
+      003200                       1259 	.org 0x3200
+      003200                       1260 _ds1302_init:
+      003200 00                    1261 	.db #0x00	; 0
+      003201 11                    1262 	.db #0x11	; 17
+      003202 10                    1263 	.db #0x10	; 16
+      003203 29                    1264 	.db #0x29	; 41
+      003204 07                    1265 	.db #0x07	; 7
+      003205 06                    1266 	.db #0x06	; 6
+      003206 17                    1267 	.db #0x17	; 23
+      003207 00                    1268 	.db #0x00	; 0
+      003208                       1269 	.org 0x3208
+      003208                       1270 _ds1302_sram_init:
+      003208 00                    1271 	.db #0x00	; 0
+      003209 00                    1272 	.db #0x00	; 0
+      00320A 00                    1273 	.db #0x00	; 0
+      00320B 00                    1274 	.db #0x00	; 0
+      00320C 00                    1275 	.db #0x00	; 0
+      00320D 00                    1276 	.db #0x00	; 0
+      00320E 00                    1277 	.db #0x00	; 0
+      00320F 00                    1278 	.db #0x00	; 0
+      003210 00                    1279 	.db #0x00	; 0
+      003211 00                    1280 	.db #0x00	; 0
+      003212 00                    1281 	.db #0x00	; 0
+      003213 00                    1282 	.db #0x00	; 0
+      003214 00                    1283 	.db #0x00	; 0
+      003215 00                    1284 	.db #0x00	; 0
+      003216 00                    1285 	.db #0x00	; 0
+      003217 00                    1286 	.db #0x00	; 0
+      003218 00                    1287 	.db #0x00	; 0
+      003219 00                    1288 	.db #0x00	; 0
+      00321A 00                    1289 	.db #0x00	; 0
+      00321B 00                    1290 	.db #0x00	; 0
+      00321C 00                    1291 	.db #0x00	; 0
+      00321D 00                    1292 	.db #0x00	; 0
+      00321E 00                    1293 	.db #0x00	; 0
+      00321F 00                    1294 	.db #0x00	; 0
+      003220 00                    1295 	.db #0x00	; 0
+      003221 00                    1296 	.db #0x00	; 0
+      003222 00                    1297 	.db #0x00	; 0
+      003223 00                    1298 	.db #0x00	; 0
+      003224 00                    1299 	.db #0x00	; 0
+      003225 70                    1300 	.db #0x70	; 112	'p'
+      003226 00                    1301 	.db #0x00	; 0
+      003227                       1302 	.org 0x3227
+      003227                       1303 _convert_24h_to_12h_lut_24h_to_12h_1_101:
+      003227 00                    1304 	.db #0x00	; 0
+      003228 01                    1305 	.db #0x01	; 1
+      003229 02                    1306 	.db #0x02	; 2
+      00322A 03                    1307 	.db #0x03	; 3
+      00322B 04                    1308 	.db #0x04	; 4
+      00322C 05                    1309 	.db #0x05	; 5
+      00322D 06                    1310 	.db #0x06	; 6
+      00322E 07                    1311 	.db #0x07	; 7
+      00322F 08                    1312 	.db #0x08	; 8
+      003230 09                    1313 	.db #0x09	; 9
+      003231 00                    1314 	.db #0x00	; 0
+      003232 00                    1315 	.db #0x00	; 0
+      003233 00                    1316 	.db #0x00	; 0
+      003234 00                    1317 	.db #0x00	; 0
+      003235 00                    1318 	.db #0x00	; 0
+      003236 00                    1319 	.db #0x00	; 0
+      003237 10                    1320 	.db #0x10	; 16
+      003238 11                    1321 	.db #0x11	; 17
+      003239 12                    1322 	.db #0x12	; 18
+      00323A 01                    1323 	.db #0x01	; 1
+      00323B 02                    1324 	.db #0x02	; 2
+      00323C 03                    1325 	.db #0x03	; 3
+      00323D 04                    1326 	.db #0x04	; 4
+      00323E 05                    1327 	.db #0x05	; 5
+      00323F 06                    1328 	.db #0x06	; 6
+      003240 07                    1329 	.db #0x07	; 7
+      003241 00                    1330 	.db #0x00	; 0
+      003242 00                    1331 	.db #0x00	; 0
+      003243 00                    1332 	.db #0x00	; 0
+      003244 00                    1333 	.db #0x00	; 0
+      003245 00                    1334 	.db #0x00	; 0
+      003246 00                    1335 	.db #0x00	; 0
+      003247 08                    1336 	.db #0x08	; 8
+      003248 09                    1337 	.db #0x09	; 9
+      003249 10                    1338 	.db #0x10	; 16
+      00324A 11                    1339 	.db #0x11	; 17

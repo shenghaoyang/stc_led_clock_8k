@@ -1,0 +1,31 @@
+-muwx
+-i stc_led_clock_8k.ihx
+-M
+-Y
+-b HOME = 0x0000
+-b DSEG = 0x0024
+-b XSEG = 0x0001
+-b PSEG = 0x0001
+-b ISEG = 0x0000
+-b BSEG = 0x0000
+-k /usr/bin/../share/sdcc/lib/small
+-k /usr/share/sdcc/lib/small
+-l mcs51
+-l libsdcc
+-l libint
+-l liblong
+-l libfloat
+./adc.rel
+./alarm.rel
+./button.rel
+./crc.rel
+./display.rel
+./ds1302.rel
+./eeprom.rel
+./fsm.rel
+./ledfonts.rel
+./main.rel
+./timer.rel
+./uart.rel
+
+-e
