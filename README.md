@@ -35,16 +35,20 @@ Since significant use of the EEPROM is present, stcgal may report a protocol err
 - Night light function 
 - Configurable automatic display scrolling (time, date, temperature, day-of-week, year)
 - Configurable automatic dimming
+- CRC checksumming of BBSRAM contents to detect corruption / power loss
 
 ## Operation 
 - Menu button : Topmost switch 
 - Select button : Bottom switch 
+- To toggle the night light function (max display brightness) in the time display screen, press the select button. By default (on startup), the display is set to the maximum brightness.
 
 - Long press on the menu and select buttons to enter the configuration menu 
 - Press menu to cycle between the configuration options, press select to enter a configuration section 
 - Use the menu and select buttons to navigate a configuration section, press or hold down the select button to change numerical / boolean values
 - Long press menu to save configuration 
 
+
+- To reset the device, press and hold both select and menu buttons on power application. 
 
 ## Caveats & Bugs
 - Alarm triggering is only checked for once every minute, when not in the settings menu. 
